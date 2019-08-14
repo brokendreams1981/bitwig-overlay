@@ -1,41 +1,52 @@
 # Bitwig Overlay
-Bitwig is one of the few delivering commercial studio software for Linux. Software is available as .deb files and updated quite
-regulary. The purpose of this overlay is to simplify the installation and upgrade of Bitwig Studio and possibly accompanying
-software later on.
-
+Bitwig is one of the few delivering commercial studio software for Linux. Software is available as .deb-files and updated quite regular. The purpose of this overlay is to simplify the installation and upgrade of Bitwig Studio and possibly accompanying software later on.
 
 # Usage instuctions
 ## Dependencies
 
-This is an overlay developed and tested on Funtoo/Gentoo Linux. It should probably work very well in Sabayon Linux as
-well, however we have no means to verify that.
+This is an overlay developed and tested on Funtoo Linux. It should probably work very well in Gentoo and Sabayon Linux as well, however I have no means to verify that. 
+
+Overlays in general depends on layman and the assumption here relies on layman being installed. 
 
 
 ## Installation
-### General
-```bash
-# make sure the repo directory exists
-mkdir /etc/portage/repos.conf
+### Layman
+A non official overlay (as this is) is not directly fetchable with layman. You have to manually register the overlay. 
 
-# install our repo
-cat << 'EOF' > /etc/portage/repos.conf/bitwig-overlay.conf
+Start by copying  `bitwig-overlay.xml` into `/etc/layman/overlays`
+
+Run `layman-updater -R` to re-read the overlay-directory.
+
+You will now also have to run `layman -L` to list all overlays or layman will not find syncthing-overlay. 
+
+Finally add the overlay to portage: `layman -a bitwig-overlay`
+
+As a security measure layman will ask for confirmation before this overlay is added. 
+
+You can now install included applications as usual using emerge.
+
+### Git
+You can install it using Gentoo's git sync mechanism as well. Just:
+
+```bash
+# create the appropriate directory
+mkdir /etc/portage/repos.conf.d
+
+# install the repo file
+cat << EOF > /etc/portage/repos.conf.d/bitwig-overlay.repo
 [bitwig-overlay]
 location = /usr/local/portage/bitwig-overlay
 sync-type = git
 sync-uri = https://github.com/bitwigstudio/bitwig-overlay.git
+auto-sync = yes
 EOF
 
-# sync
-emaint -r bitwig-overlay sync
+# sync it 
+emaint sync -r bitwig-overlay
 
-# install
-emerge -a bitwig-studio
+# install it
+emerge bitwig-studio
 ```
 
-For more information on the subject, please, check: https://wiki.gentoo.org/wiki//etc/portage/repos.conf
-
-# java
-We have removed the bundled jre binary so we can setup and use a system-wide version. Please, read: https://wiki.gentoo.org/wiki/Java in order to be able to setup `oracle-jre-bin`.
-
 # Bug, comments and requests
-Please post a ticket here on GitHub.
+Please post a ticket here on GitHub. 
